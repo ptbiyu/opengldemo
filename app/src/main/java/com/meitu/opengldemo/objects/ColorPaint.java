@@ -5,6 +5,8 @@ import android.content.Context;
 import com.meitu.opengldemo.R;
 import com.meitu.opengldemo.utils.ShaderHelper;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -64,6 +66,8 @@ public class ColorPaint {
         floatBuffer = ByteBuffer.allocateDirect(vertexArray.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
         floatBuffer.put(vertexArray);*/
         float[] vertexArray = {1,1};
+        floatBuffer = ByteBuffer.allocateDirect(vertexArray.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        floatBuffer.put(vertexArray);
         glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
         glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
         floatBuffer.position(0);
