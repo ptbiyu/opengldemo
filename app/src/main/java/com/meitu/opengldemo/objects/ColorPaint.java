@@ -59,13 +59,10 @@ public class ColorPaint {
     }
 
     public void  bindData(float[] projectionMatrix){
-        /*float[] vertexArray = new float[vertexData.size()];
+        float[] vertexArray = new float[vertexData.size()];
         for(int i=0;i<vertexData.size();i++){
             vertexArray[i]=vertexData.get(i);
         }
-        floatBuffer = ByteBuffer.allocateDirect(vertexArray.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        floatBuffer.put(vertexArray);*/
-        float[] vertexArray = {1,1};
         floatBuffer = ByteBuffer.allocateDirect(vertexArray.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
         floatBuffer.put(vertexArray);
         glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
@@ -81,7 +78,7 @@ public class ColorPaint {
     }
 
     public void drawSelf(){
-        glDrawArrays(GL_POINTS,0,1);
+        glDrawArrays(GL_POINTS,0,vertexData.size()/2);
     }
 
 }

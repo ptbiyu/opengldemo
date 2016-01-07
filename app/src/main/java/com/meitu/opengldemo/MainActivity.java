@@ -44,6 +44,9 @@ public class MainActivity extends Activity{
                     case MotionEvent.ACTION_DOWN:
                         mScrawlRender.handTouchDown(normalizedX,normalizedY);
                         break;
+                    case MotionEvent.ACTION_MOVE:
+                        mScrawlRender.handTouchDown(normalizedX,normalizedY);
+                        break;
                     case MotionEvent.ACTION_UP:
                         break;
                 }
