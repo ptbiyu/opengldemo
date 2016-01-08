@@ -17,6 +17,9 @@ public class MainActivity extends Activity{
     private GLSurfaceView glSurfaceView;
 
     private ScrawlRender mScrawlRender;
+
+    float lastX,lastY;
+    float openglLastX,openglLastY;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,21 +41,49 @@ public class MainActivity extends Activity{
         glSurfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
+                int action = event.getAction() & MotionEvent.ACTION_MASK;
                 float normalizedX = event.getX() / (float) v.getWidth() * 2 - 1;
                 float normalizedY = -(event.getY() / (float)v.getHeight() * 2 -1);
-                switch (event.getAction()){
+                float x = event.getX();
+                float y = event.getY();
+                switch (action){
                     case MotionEvent.ACTION_DOWN:
-                        mScrawlRender.handTouchDown(normalizedX,normalizedY);
+                        lastX = x;
+                        lastY = y;
+                        openglLastX = normalizedX;
+                        openglLastY = normalizedY;
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        mScrawlRender.handTouchDown(normalizedX,normalizedY);
+                        float space = spacing(event);
+                        int pointCount = (int)space / 2;
+                        float spaceX = normalizedX - openglLastX;
+                        float spaceY = normalizedY - openglLastY;
+                        //Log.d("zby log","space:"+space+",pointcount:"+pointCount);
+                        for (int i = 0; i < pointCount; i++) {
+                            mScrawlRender.handTouchMove(openglLastX + spaceX / pointCount * i, openglLastY + spaceY / pointCount * i);
+                        }
+                        lastX = x;
+                        lastY = y;
+                        openglLastX = normalizedX;
+                        openglLastY = normalizedY;
                         break;
                     case MotionEvent.ACTION_UP:
                         break;
                 }
-                return false;
+                return true;
             }
         });
+
+    }
+
+    private float spacing(MotionEvent event) {
+        float x = event.getX() - lastX;
+        float y = event.getY() - lastY;
+        return (float)Math.sqrt(x * x + y * y);
+    }
+
+    private void putPointData(){
 
     }
 

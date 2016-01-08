@@ -82,7 +82,11 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
     }
 
     public void handTouchDown(float normalizedX,float normalizedY){
-        colorPaint.putVeryexData(normalizedX,normalizedY);
+        colorPaint.putVeryexData(normalizedX, normalizedY);
+    }
+
+    public void handTouchMove(float normalizedX,float normalizedY){
+        colorPaint.putVeryexData(normalizedX, normalizedY);
     }
 
     public void handTouchUp(float normalizedX,float normalizedY){

@@ -58,14 +58,16 @@ public class ColorPaint {
     }
 
     public void  bindData(float[] projectionMatrix){
-        float[] vertexArray = new float[vertexData.size()];
-        for(int i=0;i<vertexData.size();i++){
-            vertexArray[i]=vertexData.get(i);
+        Float[] vertexArray = vertexData.toArray(new Float[vertexData.size()]);
+
+        float[] data = new float[vertexArray.length];
+        for (int i=0;i<vertexArray.length;i++){
+            data[i] = vertexArray[i].floatValue();
         }
         if (floatBuffer != null)
             floatBuffer.clear();
         floatBuffer = ByteBuffer.allocateDirect(vertexArray.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        floatBuffer.put(vertexArray);
+        floatBuffer.put(data);
         glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
         //glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
         floatBuffer.position(0);
@@ -76,6 +78,7 @@ public class ColorPaint {
     public void putVeryexData(float x,float y){
         vertexData.add(x);
         vertexData.add(y);
+        //Log.d("zby log","vertexData:"+vertexData.size());
     }
 
     public void drawSelf(){
