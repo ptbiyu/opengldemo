@@ -17,7 +17,6 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform4f;
-import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
 
@@ -29,11 +28,11 @@ public class ColorPaint {
 
     private static int POSITION_COMPONENT_CONUT = 2;
 
-    private static String U_MATRIX = "u_Matrix";
+    //private static String U_MATRIX = "u_Matrix";
     private static String A_POSITION = "a_Position";
     private static String U_COLOR ="u_Color";
 
-    private int uMatrixLocation;
+    //private int uMatrixLocation;
     private int aPositionLocation;
     private int uColorLocation;
 
@@ -49,7 +48,7 @@ public class ColorPaint {
         this.context = context;
         program = ShaderHelper.createProgram(context, R.raw.color_vertex_shader, R.raw.color_fragment_shader);
 
-        uMatrixLocation = glGetUniformLocation(program,U_MATRIX);
+       // uMatrixLocation = glGetUniformLocation(program,U_MATRIX);
         aPositionLocation = glGetAttribLocation(program, A_POSITION);
         uColorLocation = glGetUniformLocation(program, U_COLOR);
     }
@@ -63,10 +62,12 @@ public class ColorPaint {
         for(int i=0;i<vertexData.size();i++){
             vertexArray[i]=vertexData.get(i);
         }
+        if (floatBuffer != null)
+            floatBuffer.clear();
         floatBuffer = ByteBuffer.allocateDirect(vertexArray.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
         floatBuffer.put(vertexArray);
         glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
-        glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
+        //glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
         floatBuffer.position(0);
         glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_CONUT, GL_FLOAT, false, 0, floatBuffer);
         glEnableVertexAttribArray(aPositionLocation);
