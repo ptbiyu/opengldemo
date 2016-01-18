@@ -76,7 +76,7 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
         textureBg.drawSelf();
 
         colorPaint.useProgram();
-        colorPaint.bindData(projectionMatrix);
+        colorPaint.bindData();
         colorPaint.drawSelf();
 
     }
@@ -91,5 +91,9 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
 
     public void handTouchUp(float normalizedX,float normalizedY){
 
+    }
+
+    public void handTouchTextureDown(float[] pointData){
+        colorPaint.putVeryexData(pointData);
     }
 }
