@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#dedede">
+
+    <!-- 顶部菜单栏 -->
+    <RelativeLayout
+        android:id="@+id/rl_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:background="#ffffff">
+
+        <Button
+            android:id="@+id/btn_go_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:drawableLeft="@drawable/icon_back_home_selector"
+            android:background="@null"
+            android:drawablePadding="-25dp"
+            android:gravity="center"
+            android:text="首页"
+            android:textColor="#FF4970" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:background="@null"
+            android:drawablePadding="-32dp"
+            android:gravity="center"
+            android:text="保存"
+            android:textColor="#FF4970" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_last"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_main_top_undo_btn_bg" />
+
+            <ImageButton
+                android:id="@+id/btn_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="11dp"
+                android:layout_toRightOf="@+id/btn_last"
+                android:background="@drawable/edit_main_top_redo_btn_bg" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <com.meitu.opengldemo.ScrawlGLSurfaceView
+        android:id="@+id/scrawl_glsurfaveview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/rl_top_bar"
+        android:layout_above="@+id/ll_four_pen"/>
+
+    <LinearLayout
+        android:id="@+id/ll_four_pen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4"
+        android:layout_marginBottom="-20dip"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff">
+
+        <RelativeLayout
+            android:id="@+id/rl_pen_cartoon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/btn_pen_cartoon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dip"
+                android:background="@null"
+                android:src="@drawable/scrawl_pen_cartoon" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_pen_fantasy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/btn_pen_fantasy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dip"
+                android:background="@null"
+                android:src="@drawable/scrawl_pen_fantasy" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_pen_brush"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/btn_pen_brush"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dip"
+                android:background="@null"
+                android:src="@drawable/scrawl_pen_brush" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_eraser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/btn_eraser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dip"
+                android:background="@null"
+                android:src="@drawable/scrawl_eraser" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

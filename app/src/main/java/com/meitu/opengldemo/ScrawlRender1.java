@@ -1,7 +1,6 @@
 package com.meitu.opengldemo;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 
 import com.meitu.opengldemo.objects.ColorPaint;
@@ -24,7 +23,7 @@ import static android.opengl.Matrix.orthoM;
 /**
  * Created by zby on 2015/6/12.
  */
-public class ScrawlRender implements GLSurfaceView.Renderer {
+public class ScrawlRender1 implements GLSurfaceView.Renderer {
 
     private Context context;
 
@@ -37,7 +36,7 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
     private ColorPaint colorPaint;
     private TextureBg textureBg;
 
-    public ScrawlRender(Context context) {
+    public ScrawlRender1(Context context) {
         this.context = context;
 
     }
@@ -102,8 +101,5 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
 
     public void handTouchTextureDown(float[] pointData){
         colorPaint.putVeryexData(pointData);
-    }
-
-    public void setImage(Bitmap bitmap) {
     }
 }
