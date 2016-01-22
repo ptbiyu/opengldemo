@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.meitu.opengldemo.R;
 import com.meitu.opengldemo.utils.ShaderHelper;
+import com.meitu.opengldemo.utils.TextureHelper;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -20,7 +21,6 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform1i;
-import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
 
@@ -74,7 +74,7 @@ public class TextureBg {
         program = ShaderHelper.createProgram(context, R.raw.texture_vertex_shader, R.raw.texture_fragment_shader);
 
         uTextureUnitLocation = glGetUniformLocation(program, U_TEXTURE_UNIT);
-        uMatrixLocation = glGetUniformLocation(program, U_MATRIX);
+        //uMatrixLocation = glGetUniformLocation(program, U_MATRIX);
         aPositionLocation = glGetAttribLocation(program, A_POSITION);
         aTextureCoordinatesLocation = glGetAttribLocation(program, A_TEXTURE_COORDINATES);
     }
@@ -96,17 +96,21 @@ public class TextureBg {
         glEnableVertexAttribArray(aTextureCoordinatesLocation);
 
         // Pass the matrix into the shader program.
-        glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
+       // glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
 
-        // Set the active texture unit to texture unit 0.
-        glActiveTexture(GL_TEXTURE0);
 
-        // Bind the texture to this unit.
-        glBindTexture(GL_TEXTURE_2D, textureId);
+        if (textureId != TextureHelper.NO_TEXTURE) {
+            // Set the active texture unit to texture unit 0.
+            glActiveTexture(GL_TEXTURE0);
 
-        // Tell the texture uniform sampler to use this texture in the shader by
-        // telling it to read from texture unit 0.
-        glUniform1i(uTextureUnitLocation, 0);
+            // Bind the texture to this unit.
+            glBindTexture(GL_TEXTURE_2D, textureId);
+
+            // Tell the texture uniform sampler to use this texture in the shader by
+            // telling it to read from texture unit 0.
+            glUniform1i(uTextureUnitLocation, 0);
+        }
+
 
     }
 

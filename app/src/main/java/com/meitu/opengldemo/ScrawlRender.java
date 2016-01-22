@@ -2,7 +2,9 @@ package com.meitu.opengldemo;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import com.meitu.opengldemo.objects.ColorPaint;
 import com.meitu.opengldemo.objects.TextureBg;
@@ -19,7 +21,6 @@ import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glDisable;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
-import static android.opengl.Matrix.orthoM;
 
 /**
  * Created by zby on 2015/6/12.
@@ -32,10 +33,13 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
 
     private float[] modelMatrix = new float[16];
 
-    private int texture;
+    private int texture = -1;
 
     private ColorPaint colorPaint;
     private TextureBg textureBg;
+
+    private int mOutputWidth;
+    private int mOutputHeight;
 
     public ScrawlRender(Context context) {
         this.context = context;
@@ -44,11 +48,11 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
-
-        colorPaint = new ColorPaint(context);
-        textureBg = new TextureBg(context);
+        glClearColor(0.96f, 0.96f, 0.96f, 0.0f);
         texture = TextureHelper.loadTexture(context, R.drawable.test);
+
+       // colorPaint = new ColorPaint(context);
+        textureBg = new TextureBg(context);
         glEnable(GL_BLEND); // 打开混合
         glDisable(GL_DEPTH_TEST); // 关闭深度测试
     }
@@ -56,22 +60,23 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         glViewport(0, 0, width, height);
-        final float aspectRatio = width > height ? ((float) width / (float) height) : ((float) height / (float) width);
-        if (width > height)
-            orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1, 1, -1, 1);
-        else
-            orthoM(projectionMatrix, 0, -1, 1, -aspectRatio, aspectRatio, -1, 1);
-
-      /*  MatrixHelper.perspectiveM(projectionMatrix, 45, (float) width / (float) height, 1, 10);
-        setIdentityM(modelMatrix, 0);
-        translateM(modelMatrix, 0, 0, 0, -3f);
-        rotateM(modelMatrix, 0, -60f, 1f, 0f, 0f);
-
-        final float[] temp = new float[16];
-        multiplyMM(temp, 0, projectionMatrix, 0, modelMatrix, 0);
-        System.arraycopy(temp, 0, projectionMatrix, 0, temp.length);*/
-
+        onOutputSizeChanged(width, height);
     }
+
+    private void onOutputSizeChanged(int width, int height){
+        Log.d("zby log","width:"+width+",height:"+height);
+        mOutputWidth = width;
+        mOutputHeight = height;
+    }
+
+    public int getFrameWidth(){
+        return mOutputWidth;
+    }
+
+    public int getFrameHeigth(){
+        return mOutputHeight;
+    }
+
 
     @Override
     public void onDrawFrame(GL10 gl) {
@@ -79,12 +84,12 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT);
 
         textureBg.useProgram();
-        textureBg.bindData(projectionMatrix,texture);
+        textureBg.bindData(projectionMatrix, texture);
         textureBg.drawSelf();
 
-        colorPaint.useProgram();
+       /* colorPaint.useProgram();
         colorPaint.bindData();
-        colorPaint.drawSelf();
+        colorPaint.drawSelf();*/
 
     }
 
@@ -105,5 +110,13 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
     }
 
     public void setImage(Bitmap bitmap) {
+        deleteImage();
+        texture = TextureHelper.loadTexture(texture, bitmap);
+        Log.d("zby log", "texture:" + texture + ",bitmap:" + bitmap);
+    }
+
+    public void deleteImage() {
+        GLES20.glDeleteTextures(1, new int[]{texture}, 0);
+        texture = -1;
     }
 }

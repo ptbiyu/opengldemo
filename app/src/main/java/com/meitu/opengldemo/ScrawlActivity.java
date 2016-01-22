@@ -40,7 +40,7 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrawl);
 
-       /* Intent intent = new Intent(Intent.ACTION_PICK);
+      /*  Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image*//*");
         startActivityForResult(intent, REQUEST_PICK);*/
 
