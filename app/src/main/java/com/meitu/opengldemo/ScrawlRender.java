@@ -2,6 +2,7 @@ package com.meitu.opengldemo;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
@@ -13,6 +14,9 @@ import com.meitu.opengldemo.objects.TextureBrush;
 import com.meitu.opengldemo.utils.DisplayUtil;
 import com.meitu.opengldemo.utils.TextureHelper;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -33,10 +37,15 @@ import static android.opengl.GLES20.glViewport;
  */
 public class ScrawlRender implements GLSurfaceView.Renderer {
 
+    private static final float CUBE[] = {
+            -1.0f, -1.0f,
+            1.0f, -1.0f,
+            -1.0f, 1.0f,
+            1.0f, 1.0f,
+    };
     private Context context;
 
     private int textureId = TextureHelper.NO_TEXTURE;
-
 
     private Queue<Runnable> mRunOnDraw;
     private TextureBg textureBg;
@@ -44,9 +53,13 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
     private TextureBrush mTextureBrush;
     private int mOutputWidth;
     private int mOutputHeight;
+    private int mImageWidth;
+    private int mImageHeight;
 
     private int[] mFrameBuffers = new int[1];
     private int[] mFrameBufferTextures = new int[1];
+    private FloatBuffer mGLCubeBuffer;
+
 
     public ScrawlRender(Context context) {
         this.context = context;
@@ -56,6 +69,10 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         glClearColor(0.96f, 0.96f, 0.96f, 0.0f);
         mRunOnDraw = new LinkedList<Runnable>();
+        mGLCubeBuffer = ByteBuffer.allocateDirect(CUBE.length * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        mGLCubeBuffer.put(CUBE).position(0);
         textureBg = new TextureBg(context);
         mBrush = new CartoonBrush(context);
         mBrush.init();
@@ -94,12 +111,12 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         glViewport(0, 0, width, height);
         onOutputSizeChanged(width, height);
-        Log.d("zby log","onSurfaceChanged:"+width+",height:"+height);
+        Log.d("zby log", "onSurfaceChanged:" + width + ",height:" + height);
 
     }
 
     private void onOutputSizeChanged(int width, int height){
-        Log.d("zby log","width:"+width+",height:"+height);
+        Log.d("zby log", "width:" + width + ",height:" + height);
         mOutputWidth = width;
         mOutputHeight = height;
     }
@@ -119,7 +136,7 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
         glClear(GL_COLOR_BUFFER_BIT);
         runAll(mRunOnDraw);
         textureBg.useProgram();
-        textureBg.bindData(textureId);
+        textureBg.bindData(mGLCubeBuffer,textureId);
         textureBg.drawSelf();
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBuffers[0]);
@@ -147,10 +164,46 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
             @Override
             public void run() {
                 deleteImage();
-                textureId = TextureHelper.loadTexture(textureId,bitmap);
-                Log.d("zby log","tex:"+textureId);
+                Bitmap resizedBitmap = null;
+                if(bitmap.getWidth() % 2 == 1){
+                    resizedBitmap = Bitmap.createBitmap(bitmap.getWidth() + 1,bitmap.getHeight(),Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(resizedBitmap);
+                    canvas.drawARGB(0x00,0x00,0x00,0x00);
+                    canvas.drawBitmap(bitmap, 0, 0, null);
+                }
+                textureId = TextureHelper.loadTexture(textureId,  resizedBitmap == null ? bitmap :resizedBitmap);
+                if (resizedBitmap != null) {
+                    resizedBitmap.recycle();
+                }
+                mImageWidth = bitmap.getWidth();
+                mImageHeight = bitmap.getHeight();
+                adjustIamgeScaling();
+
             }
         });
+    }
+
+    private void adjustIamgeScaling() {
+        float outputWidth = mOutputWidth;
+        float outputHeight = mOutputHeight;
+        float ratio1 = outputWidth / mImageWidth;
+        float ratio2 = outputHeight / mImageHeight;
+        float ratioMax = Math.max(ratio1, ratio2);
+        int imageWidthNew = Math.round(mImageWidth * ratioMax);
+        int imageHeightNew = Math.round(mImageHeight * ratioMax);
+
+        float ratioWidth = imageWidthNew / outputWidth;
+        float ratioHeight = imageHeightNew / outputHeight;
+
+        float[] cube = CUBE;
+        cube = new float[]{
+                CUBE[0] / ratioHeight, CUBE[1] / ratioWidth,
+                CUBE[2] / ratioHeight, CUBE[3] / ratioWidth,
+                CUBE[4] / ratioHeight, CUBE[5] / ratioWidth,
+                CUBE[6] / ratioHeight, CUBE[7] / ratioWidth,
+        };
+        mGLCubeBuffer.clear();
+        mGLCubeBuffer.put(cube).position(0);
     }
 
     public void deleteImage() {

@@ -1,6 +1,7 @@
 package com.meitu.opengldemo.objects;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.meitu.opengldemo.R;
 import com.meitu.opengldemo.utils.ShaderHelper;
@@ -13,7 +14,7 @@ import java.nio.FloatBuffer;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.GL_TRIANGLE_FAN;
+import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDrawArrays;
@@ -34,6 +35,12 @@ public class TextureBg {
     private static final int TEXTURE_COMPONENT_COUNT = 2;
     private static final int STRIDE = (POSITION_COMPONENT_COUNT + TEXTURE_COMPONENT_COUNT) * BYTES_PER_FLOAT;
 
+    private static final float CUBE[] = {
+            -1.0f, -1.0f,
+            1.0f, -1.0f,
+            -1.0f, 1.0f,
+            1.0f, 1.0f,
+    };
     // Uniform constants
     protected static final String U_MATRIX = "u_Matrix";
     protected static final String U_TEXTURE_UNIT = "u_TextureUnit";
@@ -48,29 +55,29 @@ public class TextureBg {
     private int uMatrixLocation;
     private int uTextureUnitLocation;
 
-    private FloatBuffer vertexData;
-
+    private FloatBuffer mGLCubeBuffer;
+    private FloatBuffer textureBuffer;
     private Context context;
 
     private int program;
 
     public TextureBg(Context context) {
         this.context = context;
-        float[] tableVerticesWithTriangles = {
+        float[] vertexDate = {
                 // Order of coordinates: X, Y, ,S,T
-
-                // Triangle Fan
-                0f, 0f, 0.5f, 0.5f,
-                -1f, -1f, 0f, 1f,
-                1f, -1f, 1f, 1f,
-                1f, 1f, 1f, 0f,
-                -1f, 1f, 0f, 0f,
-                -1f, -1f, 0f, 1f,
-
-
+                0.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 0.0f,
+                1.0f, 0.0f,
         };
-        vertexData = ByteBuffer.allocateDirect(tableVerticesWithTriangles.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
-        vertexData.put(tableVerticesWithTriangles);
+
+        mGLCubeBuffer = ByteBuffer.allocateDirect(CUBE.length * BYTES_PER_FLOAT)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer();
+        mGLCubeBuffer.put(CUBE).position(0);
+
+        textureBuffer = ByteBuffer.allocateDirect(vertexDate.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        textureBuffer.put(vertexDate);
         program = ShaderHelper.createProgram(context, R.raw.texture_vertex_shader, R.raw.texture_fragment_shader);
 
         uTextureUnitLocation = glGetUniformLocation(program, U_TEXTURE_UNIT);
@@ -83,14 +90,15 @@ public class TextureBg {
         glUseProgram(program);
     }
 
-    public void  bindData(int textureId){
-        vertexData.position(0);
+    public void  bindData(FloatBuffer vertexBuffer,int textureId){
+        Log.d("zby log","bindData:"+textureId);
+        vertexBuffer.position(0);
         glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT,
-                false, STRIDE, vertexData);
+                false, 0, vertexBuffer);
 
-        vertexData.position(POSITION_COMPONENT_COUNT);
+        textureBuffer.position(0);
         glVertexAttribPointer(aTextureCoordinatesLocation, TEXTURE_COMPONENT_COUNT, GL_FLOAT,
-                false, STRIDE, vertexData);
+                false, 0, textureBuffer);
 
         glEnableVertexAttribArray(aPositionLocation);
         glEnableVertexAttribArray(aTextureCoordinatesLocation);
@@ -115,7 +123,7 @@ public class TextureBg {
     }
 
     public void drawSelf(){
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
 
 
