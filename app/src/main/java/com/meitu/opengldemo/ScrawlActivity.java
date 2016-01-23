@@ -5,10 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.meitu.opengldemo.utils.DisplayUtil;
@@ -26,7 +27,12 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
     public static final int MODE_FANTASY = 1;
     public static final int MODE_COLOR = 2;
     public static final int MODE_ERASER = 3;
-    private RelativeLayout mBtnCartoon, mBtnFantasy, mBtnColor, mBtnEraser;
+    private static final int SPACE_CARTOON = 10;
+    private static final int SPACE_FANTASY = 10;
+    private static final int SPACE_COLOR = 2;
+    private static final int SPACE_ERASER = 2;
+
+    private ImageView mBtnCartoon, mBtnFantasy, mBtnColor, mBtnEraser;
     /**
      * 当前画笔类型
      */
@@ -35,33 +41,115 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
 
     private ScrawlGLSurfaceView mGlSurfaceView;
 
+    private int twoSpaceing = SPACE_CARTOON;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrawl);
 
-      /*  Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image*//*");
-        startActivityForResult(intent, REQUEST_PICK);*/
-
         findView();
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_PICK);
 
     }
 
     private void findView() {
 
-        mBtnCartoon = (RelativeLayout) findViewById(R.id.rl_pen_cartoon);
-        mBtnFantasy = (RelativeLayout) findViewById(R.id.rl_pen_fantasy);
-        mBtnColor = (RelativeLayout) findViewById(R.id.rl_pen_brush);
-        mBtnEraser = (RelativeLayout) findViewById(R.id.rl_eraser);
+        mBtnCartoon = (ImageView) findViewById(R.id.btn_pen_cartoon);
+        mBtnFantasy = (ImageView) findViewById(R.id.btn_pen_fantasy);
+        mBtnColor = (ImageView) findViewById(R.id.btn_pen_color);
+        mBtnEraser = (ImageView) findViewById(R.id.btn_eraser);
         mBtnCartoon.setOnClickListener(this);
         mBtnFantasy.setOnClickListener(this);
         mBtnColor.setOnClickListener(this);
         mBtnEraser.setOnClickListener(this);
 
         mGlSurfaceView = (ScrawlGLSurfaceView) findViewById(R.id.scrawl_glsurfaveview);;
+        mGlSurfaceView.setOnTouchListener(mGLOnTouchListner);
 
+        doPenMarginUp(mCurrScrawlMode);
     }
+
+
+    float lastX,lastY;
+    float openglLastX,openglLastY;
+    private View.OnTouchListener mGLOnTouchListner = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            int action = event.getAction() & MotionEvent.ACTION_MASK;
+
+            float normalizedX = event.getX() / (float) v.getWidth() * 2 - 1;
+            float normalizedY = -(event.getY() / (float)v.getHeight() * 2 -1);
+            float x = event.getX();
+            float y = event.getY();
+            switch (action){
+                case MotionEvent.ACTION_DOWN:
+                    lastX = x;
+                    lastY = y;
+                    openglLastX = normalizedX;
+                    openglLastY = normalizedY;
+                    handleMiddlePoint(x,y);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float space = spacing(event);
+                    int pointCount = (int)space / twoSpaceing;
+                    float spaceX = x - lastX;
+                    float spaceY = y - lastY;
+                    //Log.d("zby log","space:"+space+",pointcount:"+pointCount);
+                    for (int i = 0; i < pointCount; i++) {
+                        handleMiddlePoint(lastX + spaceX / pointCount * i, lastY + spaceY / pointCount * i);
+                    }
+                    lastX = x;
+                    lastY = y;
+                    openglLastX = normalizedX;
+                    openglLastY = normalizedY;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    break;
+            }
+            return true;
+        }
+    };
+
+    private float spacing(MotionEvent event) {
+        float x = event.getX() - lastX;
+        float y = event.getY() - lastY;
+        return (float)Math.sqrt(x * x + y * y);
+    }
+
+    private void handleMiddlePoint(float x,float y){
+        float x1 = x - 50;
+        float y1 = y - 50;
+        float x2 = x + 50;
+        float y2 = y - 50;
+        float x3 = x + 50;
+        float y3 = y + 50;
+        float x4 = x - 50;
+        float y4 = y + 50;
+       /* Log.d("zby log","handleMiddlePoint:"+xPxToNormalized(x)+","+yPxToNormalized(y)+","+xPxToNormalized(x1)+","+yPxToNormalized(y1)
+                +","+xPxToNormalized(x2)+","+yPxToNormalized(y2)+","+xPxToNormalized(x3)+","+yPxToNormalized(y3)+","
+                +xPxToNormalized(x4)+","+yPxToNormalized(y4));*/
+        float[] vertexdata = {
+                xPxToNormalized(x), yPxToNormalized(y) ,
+                xPxToNormalized(x1), yPxToNormalized(y1) ,
+                xPxToNormalized(x2), yPxToNormalized(y2) ,
+                xPxToNormalized(x3), yPxToNormalized(y3) ,
+                xPxToNormalized(x4), yPxToNormalized(y4) ,
+                xPxToNormalized(x1),   yPxToNormalized(y1)
+        };
+        mGlSurfaceView.handTouch(vertexdata);
+    }
+
+    private float xPxToNormalized(float x){
+        return x / DisplayUtil.getScreenWidth(this) * 2 - 1;
+    }
+
+    private float yPxToNormalized(float y) {
+        return -(y / DisplayUtil.getScreenHeight(this) * 2 - 1);
+    }
+
 
 
     @Override
@@ -85,37 +173,45 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onPause() {
         super.onPause();
-        //glSurfaceView.onPause();
+        mGlSurfaceView.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //glSurfaceView.onResume();
+        mGlSurfaceView.onResume();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.rl_pen_cartoon:
+            case R.id.btn_pen_cartoon:
                 mLastScrawlMode = mCurrScrawlMode;
                 mCurrScrawlMode = MODE_CARTOON;
+                twoSpaceing = SPACE_CARTOON;
                 doPenUpDownAnimation(mCurrScrawlMode, mLastScrawlMode);
+                mGlSurfaceView.changeBrush(mCurrScrawlMode);
                 break;
-            case R.id.rl_pen_fantasy:
+            case R.id.btn_pen_fantasy:
                 mLastScrawlMode = mCurrScrawlMode;
                 mCurrScrawlMode = MODE_FANTASY;
+                twoSpaceing = SPACE_FANTASY;
                 doPenUpDownAnimation(mCurrScrawlMode, mLastScrawlMode);
+                mGlSurfaceView.changeBrush(mCurrScrawlMode);
                 break;
-            case R.id.rl_pen_brush:
+            case R.id.btn_pen_color:
                 mLastScrawlMode = mCurrScrawlMode;
                 mCurrScrawlMode = MODE_COLOR;
+                twoSpaceing = SPACE_COLOR;
                 doPenUpDownAnimation(mCurrScrawlMode, mLastScrawlMode);
+                mGlSurfaceView.changeBrush(mCurrScrawlMode);
                 break;
-            case R.id.rl_eraser:
+            case R.id.btn_eraser:
                 mLastScrawlMode = mCurrScrawlMode;
                 mCurrScrawlMode = MODE_ERASER;
+                twoSpaceing = SPACE_ERASER;
                 doPenUpDownAnimation(mCurrScrawlMode, mLastScrawlMode);
+                mGlSurfaceView.changeBrush(mCurrScrawlMode);
                 break;
         }
     }
@@ -215,22 +311,22 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
     private void doPenMarginUp(int penType) {
         switch (penType) {
             case MODE_CARTOON:
-                LinearLayout.LayoutParams lp1 = (LinearLayout.LayoutParams) mBtnCartoon.getLayoutParams();
+                RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams) mBtnCartoon.getLayoutParams();
                 lp1.topMargin = 0;
                 mBtnCartoon.setLayoutParams(lp1);
                 break;
             case MODE_FANTASY:
-                LinearLayout.LayoutParams lp2 = (LinearLayout.LayoutParams) mBtnFantasy.getLayoutParams();
+                RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) mBtnFantasy.getLayoutParams();
                 lp2.topMargin = 0;
                 mBtnFantasy.setLayoutParams(lp2);
                 break;
             case MODE_COLOR:
-                LinearLayout.LayoutParams lp3 = (LinearLayout.LayoutParams) mBtnColor.getLayoutParams();
+                RelativeLayout.LayoutParams lp3 = (RelativeLayout.LayoutParams) mBtnColor.getLayoutParams();
                 lp3.topMargin = 0;
                 mBtnColor.setLayoutParams(lp3);
                 break;
             case MODE_ERASER:
-                LinearLayout.LayoutParams lp4 = (LinearLayout.LayoutParams) mBtnEraser.getLayoutParams();
+                RelativeLayout.LayoutParams lp4 = (RelativeLayout.LayoutParams) mBtnEraser.getLayoutParams();
                 lp4.topMargin = 0;
                 mBtnEraser.setLayoutParams(lp4);
                 break;
@@ -245,22 +341,22 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
     private void doPenMarginDown(int penType) {
         switch (penType) {
             case MODE_CARTOON:
-                LinearLayout.LayoutParams lp1 = (LinearLayout.LayoutParams) mBtnCartoon.getLayoutParams();
+                RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams) mBtnCartoon.getLayoutParams();
                 lp1.topMargin = DisplayUtil.dipToPx(ScrawlActivity.this, 15);
                 mBtnCartoon.setLayoutParams(lp1);
                 break;
             case MODE_FANTASY:
-                LinearLayout.LayoutParams lp2 = (LinearLayout.LayoutParams) mBtnFantasy.getLayoutParams();
+                RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) mBtnFantasy.getLayoutParams();
                 lp2.topMargin = DisplayUtil.dipToPx(ScrawlActivity.this, 15);
                 mBtnFantasy.setLayoutParams(lp2);
                 break;
             case MODE_COLOR:
-                LinearLayout.LayoutParams lp3 = (LinearLayout.LayoutParams) mBtnColor.getLayoutParams();
+                RelativeLayout.LayoutParams lp3 = (RelativeLayout.LayoutParams) mBtnColor.getLayoutParams();
                 lp3.topMargin = DisplayUtil.dipToPx(ScrawlActivity.this, 15);
                 mBtnColor.setLayoutParams(lp3);
                 break;
             case MODE_ERASER:
-                LinearLayout.LayoutParams lp4 = (LinearLayout.LayoutParams) mBtnEraser.getLayoutParams();
+                RelativeLayout.LayoutParams lp4 = (RelativeLayout.LayoutParams) mBtnEraser.getLayoutParams();
                 lp4.topMargin = DisplayUtil.dipToPx(ScrawlActivity.this, 15);
                 mBtnEraser.setLayoutParams(lp4);
                 break;

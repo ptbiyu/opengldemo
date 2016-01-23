@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-import android.util.Log;
 
 import static android.opengl.GLES20.GL_LINEAR;
 import static android.opengl.GLES20.GL_LINEAR_MIPMAP_LINEAR;
@@ -29,7 +28,6 @@ public class TextureHelper {
     public static int loadTexture(Context context, int resourceId) {
         final int[] textureObjectIds = new int[1];
         glGenTextures(1, textureObjectIds, 0);
-        Log.d("zby log", "loadTexture textureObjectIds[0]:" + textureObjectIds[0]);
         if (textureObjectIds[0] == 0) {
             return 0;
         }
@@ -98,7 +96,6 @@ public class TextureHelper {
             GLUtils.texSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, bitmap);
             textures[0] = usedTexId;
         }
-        Log.d("zby log","textureObjectIds[0]:"+textures[0]);
         return textures[0];
       /*  final int[] textureObjectIds = new int[1];
         glGenTextures(1, textureObjectIds, 0);

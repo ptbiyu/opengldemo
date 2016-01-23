@@ -12,7 +12,13 @@ import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
+
+import com.meitu.opengldemo.objects.CartoonBrush;
+import com.meitu.opengldemo.objects.ColorBrush;
+import com.meitu.opengldemo.objects.EarserBrush;
+import com.meitu.opengldemo.objects.FantasyBrush;
 
 import java.io.FileNotFoundException;
 
@@ -64,6 +70,29 @@ public class ScrawlGLSurfaceView extends GLSurfaceView{
         return configurationInfo.reqGlEsVersion >= 0x20000;
     }
 
+
+    public void handTouch(float[] vertexdata) {
+        mScrawlRender.handTouch(vertexdata);
+        requestRender();
+    }
+
+    public void changeBrush(int modeBrush) {
+        switch (modeBrush){
+            case ScrawlActivity.MODE_CARTOON:
+                mScrawlRender.changeBrush(new CartoonBrush(mContext));
+                break;
+            case ScrawlActivity.MODE_FANTASY:
+                mScrawlRender.changeBrush(new FantasyBrush(mContext));
+                break;
+            case ScrawlActivity.MODE_COLOR:
+                mScrawlRender.changeBrush(new ColorBrush(mContext));
+                break;
+            case ScrawlActivity.MODE_ERASER:
+                mScrawlRender.changeBrush(new EarserBrush(mContext));
+                break;
+        }
+    }
+
     public void setImage(Uri uri) {
 
         new LoadImageUriTask(this, uri).execute();
@@ -75,12 +104,15 @@ public class ScrawlGLSurfaceView extends GLSurfaceView{
         private int mOutputHeight;
         public LoadImageUriTask(ScrawlGLSurfaceView scrawlGLSurfaceView, Uri uri) {
             mUri = uri;
-            mOutputWidth = mScrawlRender.getFrameWidth();
-            mOutputHeight = mScrawlRender.getFrameHeigth();
+            Log.d("zby log","LoadImageUriTask");
+           /* mOutputWidth = mScrawlRender.getFrameWidth();
+            mOutputHeight = mScrawlRender.getFrameHeigth();*/
         }
 
         @Override
         protected Bitmap doInBackground(Void... params) {
+            mOutputWidth = 1440;
+            mOutputHeight = 1988;
             return loadResizedImage();
         }
 

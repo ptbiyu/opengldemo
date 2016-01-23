@@ -83,7 +83,7 @@ public class TextureBg {
         glUseProgram(program);
     }
 
-    public void  bindData(float[] projectionMatrix,int textureId){
+    public void  bindData(int textureId){
         vertexData.position(0);
         glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT,
                 false, STRIDE, vertexData);

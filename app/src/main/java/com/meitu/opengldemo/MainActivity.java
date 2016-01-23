@@ -107,7 +107,7 @@ public class MainActivity extends Activity{
                 xPxToNormalized(x3), yPxToNormalized(y3) ,
                 xPxToNormalized(x1),   yPxToNormalized(y1)
         };
-        mScrawlRender.handTouchTextureDown(pointdata);
+        //mScrawlRender.handTouchTextureDown(pointdata);
         glSurfaceView.requestRender();
     }
 

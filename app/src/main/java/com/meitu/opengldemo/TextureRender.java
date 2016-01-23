@@ -3,12 +3,8 @@ package com.meitu.opengldemo;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 
-import com.meitu.opengldemo.utils.MatrixHelper;
 import com.meitu.opengldemo.utils.ShaderHelper;
-import com.meitu.opengldemo.utils.TextResourceReader;
-import com.meitu.opengldemo.utils.TextureHelper;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -35,11 +31,7 @@ import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static android.opengl.GLES20.glViewport;
-import static android.opengl.Matrix.multiplyMM;
 import static android.opengl.Matrix.orthoM;
-import static android.opengl.Matrix.rotateM;
-import static android.opengl.Matrix.setIdentityM;
-import static android.opengl.Matrix.translateM;
 
 /**
  * Created by zby on 2015/6/12.
@@ -126,8 +118,6 @@ public class TextureRender implements GLSurfaceView.Renderer {
 
         glEnableVertexAttribArray(aPositionLocation);
         glEnableVertexAttribArray(aTextureCoordinatesLocation);
-
-        texture = TextureHelper.loadTexture(context, R.drawable.test);
 
     }
 
