@@ -4,8 +4,10 @@ import android.content.Context;
 
 import com.meitu.opengldemo.R;
 
+import static android.opengl.GLES20.GL_ONE;
 import static android.opengl.GLES20.GL_ONE_MINUS_SRC_ALPHA;
 import static android.opengl.GLES20.GL_SRC_ALPHA;
+import static android.opengl.GLES20.GL_ZERO;
 import static android.opengl.GLES20.glBlendFunc;
 
 /**
@@ -25,5 +27,6 @@ public class CartoonBrush extends Brush{
     public void draw() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // 基于源象素alpha通道值的半透明混合函数
         super.draw();
+        glBlendFunc(GL_ONE, GL_ZERO);
     }
 }

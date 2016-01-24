@@ -19,21 +19,33 @@ public class TextureBrush extends Brush{
     @Override
     public void init() {
         super.init();
-        float[] tableVerticesWithTriangles = {
+        float[] vertexData = {
                 // Order of coordinates: X, Y, ,S,T
 
                 // Triangle Fan
-                0f, 0f,
-                -1f, 1f,
-                1f, 1f,
-                1f, -1f,
-                -1f, -1f,
-                -1f, 1f,
+                -1.0f, -1.0f,
+                1.0f, -1.0f,
+                -1.0f, 1.0f,
+                1.0f, 1.0f,
 
 
         };
+        putVertexData(vertexData);
 
-        putVertexData(tableVerticesWithTriangles);
+        float[] textureData = {
+                // Order of coordinates: X, Y, ,S,T
+
+                // Triangle Fan
+                0.0f, 0f,
+                1.0f, 0f,
+                0.0f, 1.0f,
+                1.0f, 1.0f,
+
+
+        };
+        putTextureData(textureData);
+
+
     }
 
 }

@@ -14,7 +14,7 @@ import java.nio.FloatBuffer;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
-import static android.opengl.GLES20.GL_TRIANGLE_FAN;
+import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
@@ -34,7 +34,7 @@ public class Brush {
     private static final int BYTES_PER_FLOAT = 4;
     private static final int POSITION_COMPONENT_COUNT = 2;
     private static final int TEXTURE_COMPONENT_COUNT = 2;
-    private static final int TEXTURE_COMPLETE_COUNT = 12;
+    private static final int TEXTURE_COMPLETE_COUNT = 8;
 
     private static final int STRIDE = (POSITION_COMPONENT_COUNT + TEXTURE_COMPONENT_COUNT) * BYTES_PER_FLOAT;
 
@@ -57,12 +57,10 @@ public class Brush {
     private float[] vertexData = {};
     private float[] textureData = {
             // Triangle Fan
-            0.5f, 0.5f,
-            0f, 1f,
-            1f, 1f,
-            1f, 0f,
-            0f, 0f,
-            0f, 1f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
     };
 
     private FloatBuffer vertexBuffer;
@@ -111,6 +109,9 @@ public class Brush {
             vertexBuffer.clear();
         vertexBuffer.put(vertexData);
 
+        //if (vertexData.length >0)
+           // Log.d("zby log","vertexData:"+vertexData[0]+","+vertexData[1]);
+
         vertexBuffer.position(0);
         glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT,
                 false, 0, vertexBuffer);
@@ -132,7 +133,7 @@ public class Brush {
         // telling it to read from texture unit 0.
         glUniform1i(uTextureUnitLocation, 0);
 
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
         glDisableVertexAttribArray(aPositionLocation);
         glDisableVertexAttribArray(aTextureCoordinatesLocation);
@@ -153,6 +154,11 @@ public class Brush {
         glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT,
                 false, 0, vertexBuffer);
 
+        if (textureBuffer != null)
+            textureBuffer.clear();
+        textureBuffer = ByteBuffer.allocateDirect(textureData.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        textureBuffer.put(textureData);
+
         textureBuffer.position(0);
         glVertexAttribPointer(aTextureCoordinatesLocation, TEXTURE_COMPONENT_COUNT, GL_FLOAT,
                 false, 0, textureBuffer);
@@ -170,7 +176,44 @@ public class Brush {
         // telling it to read from texture unit 0.
         glUniform1i(uTextureUnitLocation, 0);
 
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+        glDisableVertexAttribArray(aPositionLocation);
+        glDisableVertexAttribArray(aTextureCoordinatesLocation);
+        glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+
+    }
+
+    public void draw(FloatBuffer vertexBuffer,int textureId) {
+        glUseProgram(programId);
+
+
+        vertexBuffer.position(0);
+        glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT,
+                false, 0, vertexBuffer);
+
+        if (textureBuffer != null)
+            textureBuffer.clear();
+        textureBuffer = ByteBuffer.allocateDirect(textureData.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        textureBuffer.put(textureData);
+        textureBuffer.position(0);
+        glVertexAttribPointer(aTextureCoordinatesLocation, TEXTURE_COMPONENT_COUNT, GL_FLOAT,
+                false, 0, textureBuffer);
+
+        glEnableVertexAttribArray(aPositionLocation);
+        glEnableVertexAttribArray(aTextureCoordinatesLocation);
+
+        // Set the active texture unit to texture unit 0.
+        glActiveTexture(GL_TEXTURE0);
+
+        // Bind the texture to this unit.
+        glBindTexture(GL_TEXTURE_2D, textureId);
+
+        // Tell the texture uniform sampler to use this texture in the shader by
+        // telling it to read from texture unit 0.
+        glUniform1i(uTextureUnitLocation, 0);
+
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
         glDisableVertexAttribArray(aPositionLocation);
         glDisableVertexAttribArray(aTextureCoordinatesLocation);
@@ -180,6 +223,9 @@ public class Brush {
 
     public void putVertexData(float[] vertexData){
         this.vertexData = vertexData;
+    }
+    public void putTextureData(float[] textureData){
+        this.textureData = textureData;
     }
 
 }

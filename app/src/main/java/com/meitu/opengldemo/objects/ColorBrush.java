@@ -5,6 +5,9 @@ import android.opengl.GLES20;
 
 import com.meitu.opengldemo.R;
 
+import static android.opengl.GLES20.GL_ONE;
+import static android.opengl.GLES20.GL_ZERO;
+import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform4f;
 
@@ -34,6 +37,7 @@ public class ColorBrush extends Brush{
     public void draw() {
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         super.draw();
+        glBlendFunc(GL_ONE, GL_ZERO);
     }
 
     @Override

@@ -27,8 +27,8 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
     public static final int MODE_FANTASY = 1;
     public static final int MODE_COLOR = 2;
     public static final int MODE_ERASER = 3;
-    private static final int SPACE_CARTOON = 10;
-    private static final int SPACE_FANTASY = 10;
+    private static final int SPACE_CARTOON = 30;
+    private static final int SPACE_FANTASY = 1;
     private static final int SPACE_COLOR = 2;
     private static final int SPACE_ERASER = 2;
 
@@ -90,7 +90,7 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
                     lastY = y;
                     openglLastX = normalizedX;
                     openglLastY = normalizedY;
-                    handleMiddlePoint(x,y);
+                   // handleMiddlePoint(x,y);
                     break;
                 case MotionEvent.ACTION_MOVE:
                     float space = spacing(event);
@@ -128,18 +128,20 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
         float y3 = y + 50;
         float x4 = x - 50;
         float y4 = y + 50;
-       /* Log.d("zby log","handleMiddlePoint:"+xPxToNormalized(x)+","+yPxToNormalized(y)+","+xPxToNormalized(x1)+","+yPxToNormalized(y1)
-                +","+xPxToNormalized(x2)+","+yPxToNormalized(y2)+","+xPxToNormalized(x3)+","+yPxToNormalized(y3)+","
-                +xPxToNormalized(x4)+","+yPxToNormalized(y4));*/
+       /* Log.d("zby log", "handleMiddlePoint x:"+x+",y:"+y );
+        Log.d("zby log", "handleMiddlePoint:" + xPxToNormalized(x) + "," + yPxToNormalized(y) + "," + xPxToNormalized(x1) + "," + yPxToNormalized(y1)
+                + "," + xPxToNormalized(x2) + "," + yPxToNormalized(y2) + "," + xPxToNormalized(x3) + "," + yPxToNormalized(y3) + ","
+                + xPxToNormalized(x4) + "," + yPxToNormalized(y4));*/
         float[] vertexdata = {
-                xPxToNormalized(x), yPxToNormalized(y) ,
+                xPxToNormalized(x),  yPxToNormalized(y) ,
                 xPxToNormalized(x1), yPxToNormalized(y1) ,
                 xPxToNormalized(x2), yPxToNormalized(y2) ,
                 xPxToNormalized(x3), yPxToNormalized(y3) ,
                 xPxToNormalized(x4), yPxToNormalized(y4) ,
-                xPxToNormalized(x1),   yPxToNormalized(y1)
+                xPxToNormalized(x1), yPxToNormalized(y1)
         };
-        mGlSurfaceView.handTouch(vertexdata);
+        //mGlSurfaceView.handTouch(vertexdata);
+        mGlSurfaceView.handTouch(x,y);
     }
 
     private float xPxToNormalized(float x){

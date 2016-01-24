@@ -1,7 +1,6 @@
 package com.meitu.opengldemo.objects;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.meitu.opengldemo.R;
 import com.meitu.opengldemo.utils.ShaderHelper;
@@ -91,7 +90,6 @@ public class TextureBg {
     }
 
     public void  bindData(FloatBuffer vertexBuffer,int textureId){
-        Log.d("zby log","bindData:"+textureId);
         vertexBuffer.position(0);
         glVertexAttribPointer(aPositionLocation, POSITION_COMPONENT_COUNT, GL_FLOAT,
                 false, 0, vertexBuffer);

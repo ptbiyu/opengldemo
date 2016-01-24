@@ -76,6 +76,11 @@ public class ScrawlGLSurfaceView extends GLSurfaceView{
         requestRender();
     }
 
+    public void handTouch(float x,float y) {
+        mScrawlRender.handTouch(x,y);
+        requestRender();
+    }
+
     public void changeBrush(int modeBrush) {
         switch (modeBrush){
             case ScrawlActivity.MODE_CARTOON:
