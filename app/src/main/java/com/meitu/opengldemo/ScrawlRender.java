@@ -230,14 +230,14 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
     public void handTouch(float touchX,float touchY) {
         float x = xPxToNormalized(touchX) * ratioHeight;
         float y = yPxToNormalized(touchY) * ratioWidth;
-        float x1 = x - 0.06f;
-        float y1 = y - 0.06f;
-        float x2 = x + 0.06f;
-        float y2 = y - 0.06f;
-        float x3 = x + 0.06f;
-        float y3 = y + 0.06f;
-        float x4 = x - 0.06f;
-        float y4 = y + 0.06f;
+        float x1 = x - 0.1f;
+        float y1 = y - 0.1f;
+        float x2 = x + 0.1f;
+        float y2 = y - 0.1f;
+        float x3 = x + 0.1f;
+        float y3 = y + 0.1f;
+        float x4 = x - 0.1f;
+        float y4 = y + 0.1f;
         float[] vertexdata = {
                 x1, y1,
                 x2, y2,

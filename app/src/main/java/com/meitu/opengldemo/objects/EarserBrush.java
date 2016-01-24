@@ -18,7 +18,6 @@ public class EarserBrush extends Brush{
 
     public EarserBrush(Context context) {
         super(context, mColorVertexShader, mColorFragmentShader);
-        scrawlId = R.drawable.dm_2079_1;
     }
 
     @Override

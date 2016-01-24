@@ -28,7 +28,7 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
     public static final int MODE_COLOR = 2;
     public static final int MODE_ERASER = 3;
     private static final int SPACE_CARTOON = 30;
-    private static final int SPACE_FANTASY = 1;
+    private static final int SPACE_FANTASY = 10;
     private static final int SPACE_COLOR = 2;
     private static final int SPACE_ERASER = 2;
 

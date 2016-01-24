@@ -19,12 +19,12 @@ public class FantasyBrush extends Brush{
 
     public FantasyBrush(Context context) {
         super(context, mColorVertexShader, mColorFragmentShader);
-        scrawlId = R.drawable.dm_1055_1;
+        scrawlId = R.drawable.dm_1067_8;
     }
 
     @Override
     public void draw() {
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE); // 基于源象素alpha通道值的半透明混合函数
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         super.draw();
         glBlendFunc(GL_ONE, GL_ZERO);
     }
