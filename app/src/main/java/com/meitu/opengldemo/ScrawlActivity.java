@@ -107,6 +107,7 @@ public class ScrawlActivity extends Activity implements View.OnClickListener{
                     openglLastY = normalizedY;
                     break;
                 case MotionEvent.ACTION_UP:
+                    mGlSurfaceView.handTouch();
                     break;
             }
             return true;

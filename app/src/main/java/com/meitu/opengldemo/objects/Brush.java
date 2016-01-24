@@ -54,6 +54,8 @@ public class Brush {
 
     public int scrawlId = R.drawable.dm_2060_1;
 
+    public int srcTexureId;
+
     private float[] vertexData = {};
     private float[] textureData = {
             // Triangle Fan
@@ -142,7 +144,7 @@ public class Brush {
     }
 
 
-    public void draw(int textureId) {
+    public void draw(int texture) {
         glUseProgram(programId);
 
         if (vertexBuffer != null)
@@ -223,6 +225,10 @@ public class Brush {
 
     public void putVertexData(float[] vertexData){
         this.vertexData = vertexData;
+    }
+
+    public float[] getVertexData(){
+        return this.vertexData;
     }
     public void putTextureData(float[] textureData){
         this.textureData = textureData;

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.meitu.opengldemo.objects.Brush;
 import com.meitu.opengldemo.objects.CartoonBrush;
+import com.meitu.opengldemo.objects.EarserBrush;
 import com.meitu.opengldemo.objects.TextureBg;
 import com.meitu.opengldemo.objects.TextureBrush;
 import com.meitu.opengldemo.utils.TextureHelper;
@@ -62,7 +63,6 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
     float ratioWidth;
     float ratioHeight;
     boolean init = false;
-
 
     public ScrawlRender(Context context) {
         this.context = context;
@@ -155,7 +155,11 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
             init = true;
         }
 
-        mBrush.draw();
+        if (mBrush instanceof EarserBrush){
+            mBrush.draw(textureId);
+        } else {
+            mBrush.draw();
+        }
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
         mTextureBrush.draw(mBuffer,mFrameBufferTextures[0]);
@@ -217,8 +221,8 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
         };
         mBuffer.clear();
         mBuffer.put(cube).position(0);
-        Log.d("zby log", "imageWidthNew:" + mImageWidth  + ",imageHeightNew" + imageHeightNew);
-        creatFrameBuffer(1440, 1800);
+       // Log.d("zby log", "imageWidthNew:" + mImageWidth  + ",imageHeightNew" + imageHeightNew);
+        creatFrameBuffer(1440, 1988);
         init = false;
     }
 
@@ -244,7 +248,7 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
                 x4, y4,
                 x3, y3,
         };
-        Log.d("zby log","x:"+x+",y"+y+",x1:"+x1+",y1"+y1);
+        //Log.d("zby log","x:"+x+",y"+y+",x1:"+x1+",y1"+y1);
 
         mBrush.putVertexData(vertexdata);
 
@@ -260,6 +264,10 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
 
     public void handTouch(float[] vertexdata) {
         mBrush.putVertexData(vertexdata);
+    }
+
+    public void handTouchUp() {
+
     }
 
     public void changeBrush(final Brush brush){
@@ -278,4 +286,5 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
             mRunOnDraw.add(runnale);
         }
     }
+
 }
