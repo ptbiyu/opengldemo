@@ -222,7 +222,7 @@ public class ScrawlRender implements GLSurfaceView.Renderer {
         mBuffer.clear();
         mBuffer.put(cube).position(0);
        // Log.d("zby log", "imageWidthNew:" + mImageWidth  + ",imageHeightNew" + imageHeightNew);
-        creatFrameBuffer(1440, 1988);
+        creatFrameBuffer(mOutputWidth, mOutputHeight);
         init = false;
     }
 

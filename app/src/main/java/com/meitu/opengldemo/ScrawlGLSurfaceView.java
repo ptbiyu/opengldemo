@@ -114,14 +114,12 @@ public class ScrawlGLSurfaceView extends GLSurfaceView{
         public LoadImageUriTask(ScrawlGLSurfaceView scrawlGLSurfaceView, Uri uri) {
             mUri = uri;
             Log.d("zby log","LoadImageUriTask");
-           /* mOutputWidth = mScrawlRender.getFrameWidth();
-            mOutputHeight = mScrawlRender.getFrameHeigth();*/
         }
 
         @Override
         protected Bitmap doInBackground(Void... params) {
-            mOutputWidth = 1440;
-            mOutputHeight = 1988;
+            mOutputWidth = mScrawlRender.getFrameWidth();
+            mOutputHeight = mScrawlRender.getFrameHeigth();
             return loadResizedImage();
         }
 
